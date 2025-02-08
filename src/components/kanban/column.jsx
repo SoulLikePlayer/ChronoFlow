@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/components/kaban/Column.css";
+import EditableText from "../EditableText";
+
 
 function Column({ columnName }) {
     const [id, setId] = useState("");
@@ -26,7 +28,7 @@ function Column({ columnName }) {
 
     return (
         <div className="column">
-            <div className="column-header" id={id}>{columnName}</div>
+            <div className="column-header" id={id}><EditableText initialText={columnName} /></div>
             <div className="column-content"></div>
         </div>
     );
