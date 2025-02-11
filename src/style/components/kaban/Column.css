@@ -20,6 +20,9 @@
     border : none;
 }
 
+.add-task{
+    border: none;
+}
 
 .column-header {
     color: white;

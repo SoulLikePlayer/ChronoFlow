@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../style/components/kaban/Column.css";
 import EditableText from "../EditableText";
+import TaskCard from "../../features/tasks/taskCard";
 
 function getRandomColor() {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -49,7 +50,7 @@ function Column({ columnName, tasks, onRemove, onAddTask, onTaskDragStart, onTas
                         draggable 
                         onDragStart={(e) => onTaskDragStart(e, task.id)}
                     >
-                        {task.name}
+                        <TaskCard taskName={task.name}/>
                     </div>
                 ))}
             </div>
