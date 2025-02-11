@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import "../../style/components/kaban/Column.css";
 import EditableText from "../EditableText";
 
+function getRandomColor() {
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
 
-function Column({ columnName }) {
+function Column({ columnName, tasks, onRemove, onAddTask, onTaskDragStart, onTaskDrop, onTaskDragOver }) {
     const [id, setId] = useState("");
+    const [randomBg, setRandomBg] = useState("");
 
     useEffect(() => {
         switch (columnName) {
@@ -18,18 +22,38 @@ function Column({ columnName }) {
                 setId("finish");
                 break;
             case "Bloqué":
-                setId("bug")
+                setId("bug");
                 break;
             default:
-                setId("");
+                setId("random");
+                setRandomBg(getRandomColor());
                 break;
         }
-    }, [columnName]); 
+    }, [columnName]);
 
     return (
-        <div className="column">
-            <div className="column-header" id={id}><EditableText initialText={columnName} /></div>
-            <div className="column-content"></div>
+        <div 
+            className="column" 
+            onDrop={(e) => onTaskDrop(e, columnName)}
+            onDragOver={(e) => onTaskDragOver(e)}
+        >
+            <div className="column-header" id={id} style={id === "random" ? { backgroundColor: randomBg } : {}}>
+                <EditableText className="column-name" initialText={columnName} />
+                <button onClick={onRemove} className="remove-column">×</button>
+            </div>
+            <div className="column-content">
+                {tasks.map(task => (
+                    <div 
+                        key={task.id} 
+                        className="task" 
+                        draggable 
+                        onDragStart={(e) => onTaskDragStart(e, task.id)}
+                    >
+                        {task.name}
+                    </div>
+                ))}
+            </div>
+            <button onClick={onAddTask} className="add-task">Ajouter une tâche</button>
         </div>
     );
 }

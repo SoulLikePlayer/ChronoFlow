@@ -1,69 +1,80 @@
-import React, { useMemo, useState, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useMemo } from "react";
+
 import Column from "../../components/kanban/column";
-import { FiMaximize, FiMinimize } from "react-icons/fi";
 import EditableText from "../../components/EditableText";
 
-/*Style*/
-import "../../style/components/kaban/kabanBoard.css"
-
+import "../../style/components/kaban/kabanBoard.css";
 
 function KanbanBoard({ projectName }) {
-    const columns = useMemo(() => ["À faire", "En cours", "Bloqué", "Terminé"], []);
-    const [dimensions, setDimensions] = useState({ width: 50, height: 50 });
-    const kanbanRef = useRef(null);
-    const isResizing = useRef(false);
-
-    const startResizing = (e) => {
-        e.preventDefault();
-        isResizing.current = true;
-        document.addEventListener("mousemove", resize);
-        document.addEventListener("mouseup", stopResizing);
-    };
-
-    const resize = (e) => {
-        console.log("resizing");
-        if (isResizing.current && kanbanRef.current) {
-            const newWidth = Math.min(Math.max((e.clientX / window.innerWidth) * 100, 25), 75);
-            const newHeight = Math.min(Math.max((e.clientY / window.innerHeight) * 100, 25), 75);
-            setDimensions({ width: newWidth, height: newHeight });
+    const initialColumns = useMemo(() => ["À faire", "En cours", "Bloqué", "Terminé"], []);
+    const [columns, setColumns] = useState(initialColumns);
+    const [tasks, setTasks] = useState([]);
+    const [taskCounter, setTaskCounter] = useState(1);
+    
+    const addColumn = () => {
+        let newColumnName = prompt("Nom de la nouvelle colonne :", "Nouvelle colonne");
+        if (newColumnName) {
+            newColumnName = newColumnName.trim();
+            if (columns.includes(newColumnName)) {
+                alert("Une colonne avec ce nom existe déjà !");
+            } else {
+                setColumns([...columns, newColumnName]);
+            }
         }
     };
 
-    const stopResizing = () => {
-        isResizing.current = false;
-        document.removeEventListener("mousemove", resize);
-        document.removeEventListener("mouseup", stopResizing);
+    const removeColumn = (columnName) => {
+        setColumns(columns.filter(column => column !== columnName));
+        setTasks(tasks.filter(task => task.column !== columnName));
+    };
+
+    const addTask = (columnName) => {
+        const taskName = prompt("Nom de la tâche :", `Tâche ${taskCounter}`);
+        if (taskName) {
+            setTasks([...tasks, { id: taskCounter, name: taskName, column: columnName }]);
+            setTaskCounter(taskCounter + 1);
+        }
+    };
+
+    const onTaskDragStart = (e, taskId) => {
+        e.dataTransfer.setData("taskId", taskId);
+    };
+
+    const onTaskDrop = (e, newColumn) => {
+        const taskId = e.dataTransfer.getData("taskId");
+        setTasks(tasks.map(task => (task.id === parseInt(taskId) ? { ...task, column: newColumn } : task)));
+    };
+
+    const onTaskDragOver = (e) => {
+        e.preventDefault();
     };
 
     return (
-        <div
-            ref={kanbanRef}
-            className="kanban-container"
-            style={{ width: `${dimensions.width}vw`, height: `${dimensions.height}vh` }}
-        >
+        <div className="kanban-container">
             <header className="kanban-header">
-                <h1>Tableau Kanban : <EditableText initialText={projectName ? projectName : "Nouveau projet"}></EditableText></h1>
-                <button className="toggle-button">
-                    {dimensions.width >= 75 ? <FiMinimize /> : <FiMaximize />}
-                </button>
+                <h1>Tableau Kanban : <EditableText initialText={projectName || "Nouveau projet"} /></h1>
             </header>
             <div className="kanban-board">
-                {columns.map((title) => (
-                    <Column key={title} columnName={title} />
+                <div className="kanban-column">
+                {columns.map(columnName => (
+                    <Column 
+                        key={columnName} 
+                        columnName={columnName} 
+                        tasks={tasks.filter(task => task.column === columnName)}
+                        onRemove={() => removeColumn(columnName)}
+                        onAddTask={() => addTask(columnName)}
+                        onTaskDragStart={onTaskDragStart}
+                        onTaskDrop={onTaskDrop}
+                        onTaskDragOver={onTaskDragOver}
+                    />
                 ))}
+                </div>
+                <div className="kanban-footer">
+                    <button className="kanban-add-column" onClick={addColumn}>+</button>
+                </div>
             </div>
-            <div className="resize-handle" onMouseDown={startResizing}></div>
         </div>
     );
 }
-
-KanbanBoard.propTypes = {
-    projectName: PropTypes.string,
-};
-
-KanbanBoard.defaultProps = {
-    projectName: "",
-};
 
 export default KanbanBoard;

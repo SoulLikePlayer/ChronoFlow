@@ -8,10 +8,10 @@
     transition: width 0.2s ease, height 0.2s ease;
     overflow: hidden;
     resize: both;
-    min-width: 50%;
+    min-width: 25%;
     max-width: 65%;
 
-    min-height: 50%;
+    min-height: 25%;
     max-height: 65%;
 }
 
@@ -38,7 +38,7 @@
     color: #444;
 }
 
-.kanban-board {
+.kanban-column {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -51,16 +51,16 @@
     scrollbar-color: #ccc #f8f9fa;
 }
 
-.kanban-board::-webkit-scrollbar {
+.kanban-column::-webkit-scrollbar {
     height: 6px;
 }
 
-.kanban-board::-webkit-scrollbar-thumb {
+.kanban-column::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 6px;
 }
 
-.kanban-board::-webkit-scrollbar-track {
+.kanban-column::-webkit-scrollbar-track {
     background: #f8f9fa;
 }
 
@@ -78,3 +78,8 @@
 .resize-handle:hover {
     opacity: 1;
 }
+
+.add-task{
+    margin-top: 10px;
+}
+

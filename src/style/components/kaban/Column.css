@@ -1,6 +1,6 @@
 .column {
     width: 300px;
-    min-height: 400px;
+    min-height: 40px;
     background-color: #f4f4f4;
     border-radius: 8px;
     padding: 10px;
@@ -10,12 +10,25 @@
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.column-name {
+    flex-grow: 1; 
+    text-align: center; 
+}
+
+.remove-column {
+    margin-left: auto; 
+    border : none;
+}
+
+
 .column-header {
     color: white;
     padding: 10px;
     text-align: center;
     font-size: clamp(14px, 2vw, 18px);
     border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
 }
 
 #todo{
@@ -38,4 +51,8 @@
     flex-grow: 1;
     padding: 10px;
     overflow-y: auto;
+}
+
+#random {
+    background-color: var(--random-bg, #ccc);
 }
