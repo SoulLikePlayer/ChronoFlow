@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../style/components/kaban/Column.css";
 import EditableText from "../EditableText";
 import TaskCard from "../../features/tasks/taskCard";
+import Task from "../../models/Task";
 
 function getRandomColor() {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -54,7 +55,7 @@ function Column({ columnName, tasks, onRemove, onAddTask, onTaskDragStart, onTas
                     </div>
                 ))}
             </div>
-            <button onClick={onAddTask} className="add-task">Ajouter une tâche</button>
+            <button onClick={() => onAddTask(new Task("Nouvelle tâche", "Description"))} className="add-task">Ajouter une tâche</button>
         </div>
     );
 }
